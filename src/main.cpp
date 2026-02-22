@@ -14,12 +14,15 @@ bool init()
     return false;
   }
   
+  int height = WINDOW_HEIGHT;
+  int width = WINDOW_WIDTH;
+
   gWindow = SDL_CreateWindow(
     "Dev Survivors",
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
-    WINDOW_WIDTH,
-    WINDOW_HEIGHT,
+    width,
+    height,
     SDL_WINDOW_SHOWN
   );
 
