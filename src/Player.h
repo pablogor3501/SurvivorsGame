@@ -4,8 +4,6 @@
 #define PLAYER_H 
 
 #include <string>  // Include needed headers
-
-#pragma once
 #include "Entity.h"
 
 class Player : public Entity 
