@@ -1,3 +1,4 @@
+// Tile.cpp
 #include "Tile.h"
 
 Tile::Tile(int gridX, int gridY, SDL_Color color)

@@ -1,3 +1,5 @@
+// Entity.h
+
 // #pragma once Or: #ifndef MYCLASS_H #define MYCLASS_H ... #endif
 #ifndef ENTITY_H 
 #define ENTITY_H 

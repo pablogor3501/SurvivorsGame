@@ -1,7 +1,7 @@
+// Game.cpp
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cmath>  // for sin, cos, log, M_PI
-
 
 #include "Player.h"
 #include "Camera.h"
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     std::vector<Enemy> enemies;
-    for (int i = 0; i < 10'000; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         float x = (rand() % 2'000) - 1'000;  // random world position
         float y = (rand() % 2'000) - 1'000;
@@ -115,9 +115,9 @@ int main(int argc, char* argv[])
         // Render world (camera offset corrected for centered camera)
         float camOffsetX = camera.position.x - SCREEN_WIDTH  / 2;
         float camOffsetY = camera.position.y - SCREEN_HEIGHT / 2;
-
+        
         world.render(renderer, camOffsetX, camOffsetY);
-
+        
         // Render player (drawn centered via camera logic)
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         player.render(renderer, camera);
@@ -128,7 +128,6 @@ int main(int argc, char* argv[])
         {
             enemy.render(renderer, camera);
         }
-
 
         SDL_RenderPresent(renderer);
     }

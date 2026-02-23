@@ -1,3 +1,4 @@
+// Camera.cpp
 #include "Camera.h"
 
 Camera::Camera(int w, int h)

@@ -11,6 +11,8 @@ public:
     World(int width, int height);
 
     void render(SDL_Renderer* renderer, float camX, float camY);
+    void render(SDL_Renderer* renderer, float camX, float camY, int SCREEN_WIDTH, int SCREEN_HEIGHT, int PADDING);
+    
 
 private:
     int width;

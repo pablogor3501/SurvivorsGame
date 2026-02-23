@@ -34,4 +34,4 @@ void World::render(SDL_Renderer* renderer, float camX, float camY)
 {
     for (auto& tile : tiles)
         tile.render(renderer, camX, camY);
-}   
+} 
