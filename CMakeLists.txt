@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     src/World.cpp
     src/Tile.cpp
     src/PerlinNoise.cpp
+    src/TextureLoader.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

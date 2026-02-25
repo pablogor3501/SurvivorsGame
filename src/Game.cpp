@@ -1,17 +1,47 @@
-// Game.cpp
+/*
+*  Game.cpp
+*/
+
+// ─────────────────────────────────────────
+// Including Standard Libraries
+// ─────────────────────────────────────────
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <cmath>  // for sin, cos, log, M_PI
-
+#include <vector>
+#include <filesystem>
+// ─────────────────────────────────────────
+// Including Custom Classes
+// ─────────────────────────────────────────
 #include "Player.h"
 #include "Camera.h"
 #include "World.h"
 #include "Enemy.h"
+#include "TextureLoader.h"
 
+// ─────────────────────────────────────────
+// Globals
+// ─────────────────────────────────────────
+// Variables
 const int SCREEN_WIDTH  = 1280;
 const int SCREEN_HEIGHT = 720;
 
-int main(int argc, char* argv[])
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+SDL_Texture* texture = NULL;
+std::vector<SDL_Texture*> textures;
+
+// Functions
+SDL_Texture* loadTexture( std::string path );
+
+bool init();
+bool loadMedia();
+void close();
+// Alias
+namespace fs = std::filesystem;
+
+bool init()
 {
     // ─────────────────────────────────────────
     // SDL Init
@@ -22,8 +52,13 @@ int main(int argc, char* argv[])
                   << SDL_GetError() << std::endl;
         return -1;
     }
-
-    SDL_Window* window = SDL_CreateWindow(
+    //Set texture filtering to linear
+    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+    {
+        printf( "Warning: Linear texture filtering not enabled!" );
+    }
+   
+    window = SDL_CreateWindow(
         "Perlin Tile World",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
@@ -40,10 +75,10 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(
+    renderer = SDL_CreateRenderer(
         window,
         -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+        SDL_RENDERER_ACCELERATED// | SDL_RENDERER_PRESENTVSYNC
     );
 
     if (!renderer)
@@ -54,6 +89,44 @@ int main(int argc, char* argv[])
         SDL_Quit();
         return -1;
     }
+    return 0;
+}
+
+void close()
+{
+    // ─────────────────────────────────────────
+    // Cleanup
+    // ─────────────────────────────────────────
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    window = NULL;
+	renderer = NULL;
+	//Free loaded image
+	SDL_DestroyTexture( texture );
+    texture = NULL;
+    SDL_Quit();
+}
+
+
+
+int main(int argc, char* argv[])
+{
+    if (init() < 0)
+    {
+        std::cout << "Error on Initialization" << std::endl;
+        return -1;
+    }
+    
+    // Initialize the texture loader
+    TextureLoader textureLoader(renderer);
+
+    // Load textures
+    std::string path = "assets/textures/";
+    for (const auto & entry : fs::directory_iterator(path))
+    {    
+        std::cout << entry.path() << std::endl;
+        textures.push_back(textureLoader.loadTexture(entry.path().string()));
+    }
 
     // ─────────────────────────────────────────
     // Game Objects
@@ -62,7 +135,7 @@ int main(int argc, char* argv[])
     Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     std::vector<Enemy> enemies;
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 1'000; ++i)
     {
         float x = (rand() % 2'000) - 1'000;  // random world position
         float y = (rand() % 2'000) - 1'000;
@@ -70,7 +143,7 @@ int main(int argc, char* argv[])
     }
 
     // 100x100 tiles centered around (0,0)  
-    World world(100, 100);
+    World world(1'000, 1'000, textures);  // Pass the texture loader to the World constructor
 
     bool running = true;
     Uint32 lastTime = SDL_GetTicks();
@@ -84,6 +157,7 @@ int main(int argc, char* argv[])
         Uint32 currentTime = SDL_GetTicks();
         float deltaTime = (currentTime - lastTime) / 1'000.0f;
         lastTime = currentTime;
+        std::cout << "Time: " << int(1/deltaTime) << "fps" << std::endl;
 
         // ---- Events ----
         SDL_Event event;
@@ -116,7 +190,7 @@ int main(int argc, char* argv[])
         float camOffsetX = camera.position.x - SCREEN_WIDTH  / 2;
         float camOffsetY = camera.position.y - SCREEN_HEIGHT / 2;
         
-        world.render(renderer, camOffsetX, camOffsetY);
+        world.render(renderer, camOffsetX, camOffsetY, SCREEN_WIDTH, SCREEN_HEIGHT);
         
         // Render player (drawn centered via camera logic)
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -132,12 +206,7 @@ int main(int argc, char* argv[])
         SDL_RenderPresent(renderer);
     }
 
-    // ─────────────────────────────────────────
-    // Cleanup
-    // ─────────────────────────────────────────
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    close();
 
     return 0;
 }

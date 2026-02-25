@@ -1,8 +1,7 @@
-// Tile.cpp
 #include "Tile.h"
 
-Tile::Tile(int gridX, int gridY, SDL_Color color)
-    : x(gridX), y(gridY), color(color)
+Tile::Tile(int gridX, int gridY, SDL_Texture* texture)
+    : x(gridX), y(gridY), m_texture(texture)
 {}
 
 void Tile::render(SDL_Renderer* renderer, float camX, float camY)
@@ -13,6 +12,17 @@ void Tile::render(SDL_Renderer* renderer, float camX, float camY)
     rect.w = TILE_SIZE;
     rect.h = TILE_SIZE;
 
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    // Render the texture
+    SDL_RenderCopy(renderer, m_texture, nullptr, &rect);
+}
+
+// Method to check if the tile is visible within the camera bounds
+bool Tile::isVisible(float camX, float camY, int screenWidth, int screenHeight) const
+{
+    // Calculate the tile's screen position
+    int screenX = x * TILE_SIZE - camX;
+    int screenY = y * TILE_SIZE - camY;
+
+    // Check if the tile is within the screen's bounds
+    return !(screenX + TILE_SIZE < 0 || screenX > screenWidth || screenY + TILE_SIZE < 0 || screenY > screenHeight);
 }

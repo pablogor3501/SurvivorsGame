@@ -1,10 +1,10 @@
-// World.cpp
-
 #include "World.h"
 
-World::World(int width, int height)
+World::World(int width, int height, std::vector<SDL_Texture*> textures)
     : width(width), height(height), noise(2001)
 {
+
+    // Create the world tiles based on Perlin noise values
     double freq = 0.05;
     int depth = 4;
 
@@ -13,25 +13,30 @@ World::World(int width, int height)
         for (int x = -width; x < width; x++)
         {
             double value = noise.perlin2D(x, y, freq, depth);
-            SDL_Color col = pickColor(value);
-
-            tiles.emplace_back(x, y, col);
+            SDL_Texture* texture = pickTexture(value, textures);
+            tiles.emplace_back(x, y, texture);
         }
     }
 }
 
-SDL_Color World::pickColor(double value)
+// Choose the texture based on the Perlin noise value
+SDL_Texture* World::pickTexture(double value, std::vector<SDL_Texture*> textures)
 {
-    if (value < 0.3)      return { 41, 54,111,255 };   // deep water
-    else if (value < 0.4) return { 59, 93,201,255 };   // water
-    else if (value < 0.5) return { 64,166,245,255 };   // shallow
-    else if (value < 0.6) return {114,239,247,255 };   // sand
-    else if (value < 0.75)return { 86,108,134,255 };   // grass
-    else                  return {148,175,194,255 };   // mountain
+    if (value < 0.3)      return textures[0];    // deep water
+    else if (value < 0.4) return textures[1];        // water
+    else if (value < 0.5) return textures[2];      // shallow
+    else if (value < 0.6) return textures[3];        // sand
+    else if (value < 0.75) return textures[4];      // grass
+    else                  return textures[5];   // mountain
 }
 
-void World::render(SDL_Renderer* renderer, float camX, float camY)
+void World::render(SDL_Renderer* renderer, float camX, float camY, int screenWidth, int screenHeight)
 {
     for (auto& tile : tiles)
-        tile.render(renderer, camX, camY);
-} 
+    {
+        if (tile.isVisible(camX, camY, screenWidth, screenHeight))
+        {
+            tile.render(renderer, camX, camY);
+        }
+    }
+}
