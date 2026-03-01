@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
     Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     std::vector<Enemy> enemies;
-    for (int i = 0; i < 1'000; ++i)
+    for (int i = 0; i < 0'100; ++i)
     {
         float x = (rand() % 2'000) - 1'000;  // random world position
         float y = (rand() % 2'000) - 1'000;
@@ -192,8 +192,7 @@ int main(int argc, char* argv[])
         
         world.render(renderer, camOffsetX, camOffsetY, SCREEN_WIDTH, SCREEN_HEIGHT);
         
-        // Render player (drawn centered via camera logic)
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        
         player.render(renderer, camera);
 
         // Render Enemies

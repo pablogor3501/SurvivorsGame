@@ -14,8 +14,10 @@ public:
     // APAÑO
     int choice = rand() % 4;
     int counter = 0;
+    
 
     void handleMovement();
     void update(float deltaTime) override;
+    void render(SDL_Renderer *renderer, const Camera &camera);
 };
 #endif

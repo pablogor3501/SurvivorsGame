@@ -22,6 +22,9 @@ public:
 
     float width;
     float height;
+    
+    int health;
+    const int MAXHEALTH = 100;
 
     Entity(float x, float y, float w, float h);
     virtual ~Entity() = default;

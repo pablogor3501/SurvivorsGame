@@ -13,5 +13,6 @@ public:
 
     void handleInput(const Uint8* keyboardState);
     void update(float deltaTime) override;
+    void render(SDL_Renderer *renderer, const Camera &camera);
 };
 #endif
