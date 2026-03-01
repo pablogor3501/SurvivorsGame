@@ -29,7 +29,8 @@ void Enemy::handleMovement()
     counter += 1;
 }
 
-void Enemy::update(float deltaTime) {
+void Enemy::update(float deltaTime) 
+{
     Entity::update(deltaTime);
 }
 
@@ -64,7 +65,7 @@ void Enemy::render(SDL_Renderer* renderer, const Camera& camera)
     
     healthRect.x = position.x - camera.position.x + camera.screenWidth / 2;
     healthRect.y = (position.y - camera.position.y + camera.screenHeight / 2) + 32 + 5;
-    healthRect.w = width * 0.75;
+    healthRect.w = int(width * health / MAXHEALTH);
     healthRect.h = 3;
      
     SDL_RenderFillRectF(renderer, &healthRect);

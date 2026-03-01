@@ -15,6 +15,8 @@ public:
     int choice = rand() % 4;
     int counter = 0;
     
+    int MAXHEALTH = 100.0;
+    int health = 50;
 
     void handleMovement();
     void update(float deltaTime) override;
