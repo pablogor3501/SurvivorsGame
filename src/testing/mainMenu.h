@@ -3,8 +3,11 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <vector>
+#include <memory>
 
 #include "button.h"
+
 
 const int NUM_BUTTONS_MENU = 1;
 
@@ -20,7 +23,7 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    Button buttons[NUM_BUTTONS_MENU];
+    std::vector<std::unique_ptr<Button>> buttons;
     std::string title;
     int width;
     int height;

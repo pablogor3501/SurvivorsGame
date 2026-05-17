@@ -6,19 +6,26 @@ Button::Button()
     position.y = 0;
     width = 0;
     height = 0;
+    buttonTexture = nullptr;
 }
 
-Button::Button(int x, int y)
+Button::Button(int x, int y, SDL_Renderer* renderer, std::string texturePath)
 {
     position.x = x;
     position.y = y;
     width = BUTTON_WIDTH;
     height = BUTTON_HEIGHT;
+    buttonTexture = Texture(renderer);
+    buttonTexture.loadFromFile(texturePath);
 }
 
 Button::~Button()
 {
-    // Limpieza de recursos si es necesario
+    buttonTexture.free();
+    position.x = 0;
+    position.y = 0;
+    width = 0;
+    height = 0;
 }
 
 void Button::handleEvent(SDL_Event& e)
@@ -43,5 +50,8 @@ void Button::handleEvent(SDL_Event& e)
 
 void Button::render()
 {
-    // Lógica para renderizar el botón en la pantalla
+    if(&buttonTexture != nullptr)
+    {
+        buttonTexture.render(position.x, position.y);
+    }
 }

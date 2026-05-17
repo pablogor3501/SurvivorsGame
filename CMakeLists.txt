@@ -11,3 +11,11 @@ add_subdirectory(src/game)
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} game ${SDL2_LIBRARIES})
+
+add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_LIST_DIR}/assets
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+        COMMENT "---- Copy Assets"
+)

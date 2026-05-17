@@ -41,14 +41,17 @@ void MainMenu::init()
 
 void MainMenu::load()
 {
-    buttons[0] = Button(500, 500);
+    buttons.push_back(std::make_unique<Button>(300, 300, renderer, "assets/button_test.bmp"));
 }
 
 void MainMenu::update()
 {
     SDL_Event e;
-    SDL_Rect temp_b;
-    int temp_c = 0xFF;
+
+    Texture texture = Texture(renderer);
+    texture.loadFromFile("assets/button_test.bmp");
+    SDL_Log("Entrando al bucle principal del menú");
+
     while(true)
     {
         SDL_PollEvent(&e);
@@ -65,29 +68,14 @@ void MainMenu::update()
 
             switch (e.type)
             {
-            case SDL_MOUSEBUTTONUP:
-                if (x >= buttons[i].position.x && x <= buttons[i].position.x + width &&
-                    y >= buttons[i].position.y && y <= buttons[i].position.y + height)
-                {
-                    temp_c = temp_c ^ 0xFF; // Cambia el color del botón al hacer clic
-                }
-                break;
-            
-            default:
+            case SDL_MOUSEBUTTONDOWN:
+                SDL_Log("Botón %d presionado", i);
                 break;
             }
         }
-        
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(renderer);
-
-        for(int i = 0; i < NUM_BUTTONS_MENU; i++)
-        {
-            temp_b = { buttons[i].position.x, buttons[i].position.y, BUTTON_WIDTH, BUTTON_HEIGHT };
-            SDL_SetRenderDrawColor(renderer, 0x00, temp_c, 0xFF, 0xFF);
-            SDL_RenderFillRect(renderer, &temp_b);
-        }
-        
+        buttons[0]->render();
         SDL_RenderPresent(renderer);
     }
 }
